@@ -32,8 +32,6 @@ import numpy as np
 from PIL import Image
 import json
 
-
-import utils
 import vision_transformer as vits
 
 
@@ -209,7 +207,7 @@ if __name__ == '__main__':
                     attentions = nn.functional.interpolate(attentions.unsqueeze(0), scale_factor=args.patch_size, mode="nearest")[0].cpu().numpy()
                     # save attentions heatmaps
                     os.makedirs(args.output_dir, exist_ok=True)
-                    torchvision.utils.save_image(torchvision.utils.make_grid(img, normalize=True, scale_each=True), os.path.join(args.output_dir, "img.png"))
+
                     np.save(file=os.path.join(args.output_dir,'attention_maps.npy'),arr=attentions)
                     # for j in range(nh):
                     #     fname = os.path.join(args.output_dir, "attn-head" + str(j) + ".png")
