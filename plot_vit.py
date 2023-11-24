@@ -1,0 +1,283 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+## a - training loss
+## b - training accuracy
+## c - validation accuracy
+## d - validation loss
+
+
+### supervised_model_scratch
+a1 = np.load("numpy_files/VIT/a_vus1.npy")
+b1 = np.load("numpy_files/VIT/b_vus1.npy")
+c1 = np.load("numpy_files/VIT/c_vus1.npy")
+d1 = np.load("numpy_files/VIT/d_vus1.npy")
+
+a = np.load("numpy_files/VIT/a_vus2.npy")
+b = np.load("numpy_files/VIT/b_vus2.npy")
+c = np.load("numpy_files/VIT/c_vus2.npy")
+d = np.load("numpy_files/VIT/d_vus2.npy")
+
+a1 = np.concatenate((a,a1),axis=0)
+b1 = np.concatenate((b,b1),axis=0)
+c1 = np.concatenate((c,c1),axis=0)
+d1 = np.concatenate((d,d1),axis=0)
+
+# print(a.shape)
+
+### supervised_model_pretrained
+a = np.load("numpy_files/VIT/a_v.npy")
+b = np.load("numpy_files/VIT/b_v.npy")
+c = np.load("numpy_files/VIT/c_v.npy")
+d = np.load("numpy_files/VIT/d_v.npy")
+
+print(a)
+print(c)
+print(a1)
+print(c1)
+indices_original = np.arange(len(a))
+
+# Create an array representing the indices of the desired interpolated array
+indices_interpolated = np.linspace(0, len(a) - 1, 50)
+print(a)
+# Use numpy.interp to interpolate values
+a = np.interp(indices_interpolated, indices_original,a)
+b = np.interp(indices_interpolated, indices_original,b)
+c = np.interp(indices_interpolated, indices_original,c)
+d = np.interp(indices_interpolated, indices_original,d)
+print(a)
+print(a.shape)
+print(a1.shape)
+
+
+###  dino_model_finetuned
+a_ = np.load("numpy_files/VIT/a1_v_freeze.npy")
+b_ = np.load("numpy_files/VIT/b1_v_freeze.npy")
+c_ = np.load("numpy_files/VIT/c1_v_freeze.npy")
+d_ = np.load("numpy_files/VIT/d1_v_freeze.npy")
+
+
+### dino_model_transfer_learning
+a1_ = np.load("numpy_files/VIT/a1_v.npy")
+b1_ = np.load("numpy_files/VIT/b1_v.npy")
+c1_ = np.load("numpy_files/VIT/c1_v.npy")
+d1_ = np.load("numpy_files/VIT/d1_v.npy")
+
+print(a_.shape)
+print(d1_.shape)
+## Moving Average Validation Accuracy of all models
+avg_c = np.zeros_like(c)
+avg_c[0] = c[0]
+for i in range(1,len(c)):
+  avg_c[i] = np.mean(c[max(0,i-10):i+1])
+
+avg_c1 = np.zeros_like(c1)
+avg_c1[0] = c1[0]
+for i in range(1,len(c1)):
+  avg_c1[i] = np.mean(c1[max(0,i-10):i+1])
+
+avg_c_ = np.zeros_like(c_)
+avg_c_[0] = c_[0]
+for i in range(1,len(c_)):
+  avg_c_[i] = np.mean(c_[max(0,i-10):i+1])
+
+avg_c1_ = np.zeros_like(c1_)
+avg_c1_[0] = c1_[0]
+for i in range(1,len(c1_)):
+  avg_c1_[i] = np.mean(c1_[max(0,i-10):i+1])
+
+## plot
+plt.figure()
+plt.plot(avg_c,label = "supervised_model_pretrained",linewidth=4)
+plt.plot(avg_c1,label = "supervised_model_scratch",linewidth=4)
+plt.plot(avg_c_,label = "dino_model_finetuned",linewidth=4)
+plt.plot(avg_c1_,label = "dino_model_transfer_learning",linewidth=4)
+# plt.legend()
+plt.xlabel("Epochs")
+plt.ylabel("Validation Accuracy")
+# plt.title("Moving Average Validation Accuracy")
+plt.savefig("plots/VIT/moving_average_validation_accuracy.png")
+plt.show()
+
+
+## Moving Average Validation Loss of all models
+avg_d = np.zeros_like(d)
+avg_d[0] = d[0]
+for i in range(1,len(d)):
+  avg_d[i] = np.mean(d[max(0,i-10):i+1])
+
+avg_d1 = np.zeros_like(d1)
+avg_d1[0] = d1[0]
+for i in range(1,len(d1)):
+  avg_d1[i] = np.mean(d1[max(0,i-10):i+1])
+
+avg_d_ = np.zeros_like(d_)
+avg_d_[0] = d_[0]
+for i in range(1,len(d_)):
+  avg_d_[i] = np.mean(d_[max(0,i-10):i+1])
+
+avg_d1_ = np.zeros_like(d1_)
+avg_d1_[0] = d1_[0]
+for i in range(1,len(d1_)):
+  avg_d1_[i] = np.mean(d1_[max(0,i-10):i+1])
+
+# ## plot
+# plt.figure()
+# plt.plot(avg_d,label = "supervised_model_pretrained")
+# plt.plot(avg_d1,label = "supervised_model_scratch")
+# plt.plot(avg_d_,label = "dino_model_finetuned")
+# plt.plot(avg_d1_,label = "dino_model_transfer_learning")
+# plt.legend()
+# plt.xlabel("Epochs")
+# plt.ylabel("Validation Loss")
+# plt.title("Moving Average Validation Loss")
+# plt.savefig("plots/moving_average_validation_loss.png")
+# plt.show()
+
+
+
+
+
+
+
+## Moving Average Training Loss of all models
+avg_a = np.zeros_like(a)
+avg_a[0] = a[0]
+for i in range(1,len(a)):
+    avg_a[i] = np.mean(a[max(0,i-10):i+1])
+
+avg_a1 = np.zeros_like(a1)
+avg_a1[0] = a1[0]
+for i in range(1,len(a1)):
+    avg_a1[i] = np.mean(a1[max(0,i-10):i+1])
+
+avg_a_ = np.zeros_like(a_)
+avg_a_[0] = a_[0]
+for i in range(1,len(a_)):
+    avg_a_[i] = np.mean(a_[max(0,i-10):i+1])
+
+avg_a1_ = np.zeros_like(a1_)
+avg_a1_[0] = a1_[0]
+for i in range(1,len(a1_)):
+    avg_a1_[i] = np.mean(a1_[max(0,i-10):i+1])
+
+## plot
+plt.figure()
+plt.plot(avg_a,label = "supervised_model_pretrained",linewidth=4)
+plt.plot(avg_a1,label = "supervised_model_scratch",linewidth=4)
+plt.plot(avg_a_,label = "dino_model_finetuned",linewidth=4)
+plt.plot(avg_a1_,label = "dino_model_transfer_learning",linewidth=4)
+# plt.legend()
+plt.xlabel("Epochs")
+plt.ylabel("Training Loss")
+# plt.title("Moving Average Training Loss of all models")
+plt.savefig("plots/VIT/moving_average_training_loss.png")
+plt.show()
+
+# ## Side by side plots of moving average training loss and validation accuracy
+# plt.figure(figsize=(15,5))
+# plt.subplot(1,2,1)
+# plt.plot(avg_a,label = "supervised_model_pretrained")
+# plt.plot(avg_a1,label = "supervised_model_scratch")
+# plt.plot(avg_a_,label = "dino_model_finetuned")
+# plt.plot(avg_a1_,label = "dino_model_transfer_learning")
+# plt.legend()
+# plt.xlabel("Epochs")
+# plt.ylabel("Training Loss")
+# plt.title("Moving Average Training Loss")
+# plt.subplot(1,2,2)
+# plt.plot(c,label = "supervised_model_pretrained")
+# plt.plot(c1,label = "supervised_model_scratch")
+# plt.plot(c_,label = "dino_model_finetuned")
+# plt.plot(c1_,label = "dino_model_transfer_learning")
+# plt.legend()
+# plt.xlabel("Epochs")
+# plt.ylabel("Validation Accuracy")
+# plt.title("Moving Average Validation Accuracy")
+# plt.savefig("plots/side_by_side.png")
+# plt.show()
+
+# Side by side plots of moving average training loss and validation accuracy
+plt.figure(figsize=(15,6))
+
+# Plotting training loss
+plt.subplot(1,2,1)
+line1, = plt.plot(avg_a, linewidth=4)
+line2, = plt.plot(avg_a1, linewidth=4)
+line3, = plt.plot(avg_a_, linewidth=4)
+line4, = plt.plot(avg_a1_, linewidth=4)
+
+plt.xlabel("Epochs")
+plt.ylabel("Average Training Loss")
+# plt.title("Moving Average Training Loss")
+
+# Plotting validation accuracy
+plt.subplot(1,2,2)
+plt.plot(c, linewidth=4)
+plt.plot(c1, linewidth=4)
+plt.plot(c_, linewidth=4)
+plt.plot(c1_, linewidth=4)
+
+plt.xlabel("Epochs")
+plt.ylabel("Validation Accuracy")
+# plt.title("Moving Average Validation Accuracy")
+
+# Common legend for both plots
+# Adjusting the location of the legend
+plt.figlegend( [line1, line2, line3, line4], 
+              labels = ["supervised model (pretrained)", "supervised model (scratch)", "dino model (finetuned)", "dino model (transfer_learning)"], 
+              loc = "upper center", 
+              ncol=4, 
+              bbox_to_anchor=(0.2,0.5, 1, 0.5)
+            #   bbox_to_anchor=(0.5, 1.1)  # adjusting the position. You can play with these values to move it.
+             )
+# plt.figlegend(lines, labels, loc = 'lower center', ncol=5, labelspacing=0.)
+
+plt.tight_layout()
+plt.savefig("plots/VIT/side_by_side.png")
+plt.show()
+
+
+
+
+# ## Plot training loss of all models
+# plt.figure()
+# plt.plot(a,label = "supervised_model_pretrained")
+# plt.plot(a1,label = "supervised_model_scratch")
+# plt.plot(a_,label = "dino_model_finetuned")
+# plt.plot(a1_,label = "dino_model_transfer_learning")
+# plt.legend()
+# plt.xlabel("Epochs")
+# plt.ylabel("Training Loss")
+# plt.title("Training Loss of all models")
+# plt.savefig("plots/training_loss.png")
+# plt.show()
+
+
+# ## Plot validation accuracy of all models
+plt.figure()
+plt.plot(c,label = "supervised_model_pretrained",linewidth=4)
+plt.plot(c1,label = "supervised_model_scratch",linewidth=4)
+plt.plot(c_,label = "dino_model_finetuned",linewidth=4)
+plt.plot(c1_,label = "dino_model_transfer_learning",linewidth=4)
+# plt.legend()
+plt.xlabel("Epochs")
+plt.ylabel("Validation Accuracy")
+# plt.title("Validation Accuracy of all models")
+plt.savefig("plots/VIT/validation_accuracy.png")
+plt.show()
+
+
+## Plot validation loss of all models
+plt.figure()
+plt.plot(d,label = "supervised_model_pretrained")
+plt.plot(d1,label = "supervised_model_scratch")
+plt.plot(d_,label = "dino_model_finetuned")
+plt.plot(d1_,label = "dino_model_transfer_learning")
+# plt.legend()
+plt.xlabel("Epochs")
+plt.ylabel("Validation Loss")
+plt.title("Validation Loss of all models")
+plt.savefig("plots/VIT/validation_loss.png")
+plt.show()
